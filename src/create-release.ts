@@ -140,9 +140,9 @@ export async function getOrCreateRelease(
   if (!release) {
     throw new Error('Release not found or created.');
   } else if (!isNewRelease) {
-    console.log('Updating name and body of existing release...', release);
+    console.log('xxxx - Updating name and body of existing release...', release);
     try {
-      await github.rest.repos.updateRelease({
+      const result = await github.rest.repos.updateRelease({
         owner,
         repo,
         release_id: release.id,
@@ -150,6 +150,7 @@ export async function getOrCreateRelease(
         body: bodyFileContent || body,
         generate_release_notes: generateReleaseNotes,
       });
+      console.log('Result update release', result);
     } catch (error) {
       console.log('Error updating release', error);
       // @ts-expect-error logs
