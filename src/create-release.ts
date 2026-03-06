@@ -144,6 +144,7 @@ export async function getOrCreateRelease(
       owner,
       repo,
       release_id: release.id,
+      tag_name: tagName, // Test if this is required to not remove the tag
       name: releaseName,
       body: bodyFileContent || body,
       generate_release_notes: generateReleaseNotes,
