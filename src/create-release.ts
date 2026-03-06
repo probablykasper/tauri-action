@@ -139,15 +139,19 @@ export async function getOrCreateRelease(
   if (!release) {
     throw new Error('Release not found or created.');
   } else if (!isNewRelease) {
-    console.log('Updating name and body of existing release...');
-    await github.rest.repos.updateRelease({
-      owner,
-      repo,
-      release_id: release.id,
-      name: releaseName,
-      body: bodyFileContent || body,
-      generate_release_notes: generateReleaseNotes,
-    });
+	  if (release.draft) {
+	    console.log('Updating name and body of existing release...');
+	    await github.rest.repos.updateRelease({
+	      owner,
+	      repo,
+	      release_id: release.id,
+	      name: releaseName,
+	      body: bodyFileContent || body,
+	      generate_release_notes: generateReleaseNotes,
+	    });
+		} else {
+			console.log('Not updating name and body of the release due to GitHub API bug')
+	  }
   }
 
   return {
