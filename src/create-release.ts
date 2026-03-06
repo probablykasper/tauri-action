@@ -139,16 +139,18 @@ export async function getOrCreateRelease(
   if (!release) {
     throw new Error('Release not found or created.');
   } else if (!isNewRelease) {
-    console.log('Updating name and body of existing release...');
-    await github.rest.repos.updateRelease({
+    console.log('Updating name and body of existing release...', release);
+    const result = await github.rest.repos.updateRelease({
       owner,
       repo,
       release_id: release.id,
-      tag_name: tagName, // Test if this is required to not remove the tag
+      tag_name: release.tag_name, // Test if this is required to not remove the tag
       name: releaseName,
       body: bodyFileContent || body,
+      target_commitish: release.target_commitish,
       generate_release_notes: generateReleaseNotes,
     });
+    console.log('Result after updating', result);
   }
 
   return {
