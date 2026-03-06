@@ -24,7 +24,6 @@ interface Release {
 interface GitHubRelease {
   id: number;
   upload_url: string;
-  target_commitish: string;
   html_url: string;
   tag_name: string;
   draft: boolean;
@@ -140,22 +139,15 @@ export async function getOrCreateRelease(
   if (!release) {
     throw new Error('Release not found or created.');
   } else if (!isNewRelease) {
-    console.log('xxxx - Updating name and body of existing release...', release);
-    try {
-      const result = await github.rest.repos.updateRelease({
-        owner,
-        repo,
-        release_id: release.id,
-        name: releaseName,
-        body: bodyFileContent || body,
-        generate_release_notes: generateReleaseNotes,
-      });
-      console.log('Result update release', result);
-    } catch (error) {
-      console.log('Error updating release', error);
-      // @ts-expect-error logs
-      console.log('Status', error.status, 'Message', error.message);
-    }
+    console.log('Updating name and body of existing release...');
+    await github.rest.repos.updateRelease({
+      owner,
+      repo,
+      release_id: release.id,
+      name: releaseName,
+      body: bodyFileContent || body,
+      generate_release_notes: generateReleaseNotes,
+    });
   }
 
   return {
